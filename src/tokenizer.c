@@ -1,9 +1,9 @@
+
 #ifndef _TOKENIZER_
 #define _TOKENIZER_
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 /* Return true (non-zero) if c is a whitespace characer
    ('\t' or ' ').  
@@ -49,7 +49,7 @@ char *token_terminator(char *token){
 
 /* Counts the number of tokens in the string argument. */
 int count_tokens(char *str){
-  if (str == NULL); return 0;
+  if (str == NULL) return 0;  // Fixed syntax error: removed semicolon
 
   int count = 0;
   char *current = token_start(str);
@@ -69,19 +69,20 @@ char *copy_str(char *inStr, short len){
   if (inStr == NULL || len < 0) return NULL;
 
   char *newStr = (char *)malloc((len + 1) * sizeof(char));
-  if (new_str == NULL) return NULL;
+  if (newStr == NULL) return NULL;  // Fixed variable name
 
   //copys the len characters
   int i;
-  for (i = 0; i < len && inStr != '\0'; i++){
-    new_str[i] = inStr[i];
+  for (i = 0; i < len && inStr[i] != '\0'; i++){  // Fixed array access
+    newStr[i] = inStr[i];  // Fixed variable name
   }
 
   //terminate
-  new_str[i] = '\0';
+  newStr[i] = '\0';  // Fixed variable name
 
-  return new_str;
+  return newStr;  // Fixed variable name
 }
+
 /* Returns a freshly allocated zero-terminated vector of freshly allocated 
    space-separated tokens from zero-terminated str.
 
@@ -136,7 +137,7 @@ void print_tokens(char **tokens){
   }
 
   int i = 0;
-  while (tokens != NULL){
+  while (tokens[i] != NULL){  // Fixed condition
     printf("Token %d: \"%s\"\n", i, tokens[i]);
     i++;
   }
