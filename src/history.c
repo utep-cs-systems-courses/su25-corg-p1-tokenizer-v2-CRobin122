@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct s_Item {
   int id;
@@ -15,6 +14,27 @@ typedef struct s_List {
   struct s_Item *root;
 } List;
 
+/* Helper function to calculate string length */
+int my_strlen(const char *str) {
+  if (str == NULL) return 0;
+  int len = 0;
+  while (str[len] != '\0') {
+    len++;
+  }
+  return len;
+}
+
+/* Helper function to copy string */
+void my_strcpy(char *dest, const char *src) {
+  if (dest == NULL || src == NULL) return;
+  int i = 0;
+  while (src[i] != '\0') {
+    dest[i] = src[i];
+    i++;
+  }
+  dest[i] = '\0';
+}
+
 /* Initialize the linked list to keep the history. */
 List* init_history(){
   List *list = (List *)malloc(sizeof(List));
@@ -25,6 +45,7 @@ List* init_history(){
   list->root = NULL;
   return list;
 }
+
 /* Add a history item to the end of the list.
    List* list - the linked list
    char* str - the string to store
@@ -38,7 +59,15 @@ void add_history(List *list, char *str){
   if (new_item == NULL){
     return;
   }
-  strcpy(new_item->str, str);
+  
+  // Allocate memory for the string and copy it
+  int str_len = my_strlen(str);
+  new_item->str = (char *)malloc((str_len + 1) * sizeof(char));
+  if (new_item->str == NULL) {
+    free(new_item);
+    return;
+  }
+  my_strcpy(new_item->str, str);
 
   new_item->next = NULL;
 
@@ -51,17 +80,17 @@ void add_history(List *list, char *str){
 
   //Find the last item and get next ID
   Item *current = list->root;
-  while (current-> next != NULL){
+  while (current->next != NULL){  // Fixed typo: removed space
     current = current->next;
   }
 
   //set ID to be one more than the last item
-  new_item->id = current->id;
+  new_item->id = current->id + 1;  // Fixed: added +1
 
   //add new item to end of list
   current->next = new_item;
-  
 }
+
 /* Retrieve the string stored in the node where Item->id == id.
    List* list - the linked list
    int id - the id of the Item to find */
@@ -81,12 +110,11 @@ char *get_history(List *list, int id){
   }
   //ID not found
   return NULL;
-  
 }
 
 /*Print the entire contents of the list. */
 void print_history(List *list){
-  if (list == NULL || root == NULL){
+  if (list == NULL || list->root == NULL){  // Fixed: changed 'root' to 'list->root'
     printf("History is empty.\n");
     return;
   }
@@ -98,8 +126,8 @@ void print_history(List *list){
     printf("%d: %s\n", current->id, current->str);
     current = current->next;
   }
-  
 }
+
 /*Free the history list and the strings it references. */
 void free_history(List *list){
   if (list == NULL){
